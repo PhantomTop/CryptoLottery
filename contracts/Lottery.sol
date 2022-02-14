@@ -4,11 +4,12 @@ pragma experimental ABIEncoderV2;
 
 import "./Ownable.sol";
 import "./IBEP20.sol";
+import "./ReentrancyGuard.sol";
 
 import "./IERC20.sol";
 // import "hardhat/console.sol";
 
-contract Lottery is Ownable {
+contract Lottery is Ownable, ReentrancyGuard {
 
     //--------------------------------------
     // constant
@@ -230,13 +231,13 @@ contract Lottery is Ownable {
         return lotteryID;
     }
 
-    function getLotteryRemainTime(uint256 _lotteryID) public view returns(uint256)
+    function getLotteryRemainTime(uint256 _lotteryID) external view returns(uint256)
     {
         require(_lotteryID <= lotteryIDCounter_, "This lotteryID does not exist.");
         return LOTTERY_CYCLE - (block.timestamp - allLotteries_[_lotteryID].startingTimestamp);
     }
     
-    function getRestAmountOfTicket(uint256 _lotteryID) public view returns(uint16)
+    function getRestAmountOfTicket(uint256 _lotteryID) external view returns(uint16)
     {
         require(_lotteryID <= lotteryIDCounter_, "This lotteryID does not exist.");
         uint16 lastID = uint16(allLotteries_[_lotteryID].id.length) - 1;
@@ -330,6 +331,7 @@ contract Lottery is Ownable {
         uint16 _numberOfTickets
     )
         external
+        nonReentrantBuyTicket
         returns(uint16)
     {
         require(_lotteryID <= lotteryIDCounter_, "This lotteryID does not exist.");
@@ -345,7 +347,7 @@ contract Lottery is Ownable {
 
         uint16 lastID = lotteryInfo.id[lotteryInfo.id.length - 1];
         uint16 restAmountOfTicket = MAX_SIZE_PER_LEVEL[uint256(lotteryInfo.lotteryLevel)] - lastID + 1;
-        lastID = 0;
+        // lastID = 0;
         require(restAmountOfTicket >= _numberOfTickets, 
             "There is not enough ticket");
         uint256 busdAmount = _numberOfTickets * PRICE_PER_TICKET[uint256(lotteryInfo.lotteryLevel)] * (10 ** busd_.decimals());
@@ -357,7 +359,7 @@ contract Lottery is Ownable {
         
         lastID = lotteryInfo.id[lotteryInfo.id.length - 1];
         uint16 newID = lastID + lotteryInfo.amountOfTicket[lastID];
-        lastID = 0;
+        // lastID = 0;
         lotteryInfo.id.push(newID);
         lotteryInfo.member[newID] = address(msg.sender);
         lotteryInfo.amountOfTicket[newID] = _numberOfTickets;
@@ -398,6 +400,7 @@ contract Lottery is Ownable {
     )
         external
         onlyOwner
+        nonReentrantWhoIsWinner
         returns(uint16)
     {
         require(_lotteryID <= lotteryIDCounter_, "This lotteryID does not exist.");
@@ -442,7 +445,7 @@ contract Lottery is Ownable {
         return lotteryInfo.winnerID;
     }
 
-    function winnerGetPrize(uint256 _lotteryID) external returns(bool)
+    function winnerGetPrize(uint256 _lotteryID) external nonReentrantWinnerGetPrize returns(bool)
     {
         require(_lotteryID <= lotteryIDCounter_, "This lotteryID does not exist.");
         uint16 winnerID = allLotteries_[_lotteryID].winnerID;
