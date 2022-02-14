@@ -331,7 +331,6 @@ contract Lottery is Ownable, ReentrancyGuard {
         uint16 _numberOfTickets
     )
         external
-        nonReentrantBuyTicket
         returns(uint16)
     {
         require(_lotteryID <= lotteryIDCounter_, "This lotteryID does not exist.");
@@ -344,6 +343,247 @@ contract Lottery is Ownable, ReentrancyGuard {
 
         require(lotteryInfo.lotteryStatus == Status.Open, 
             "Can't buy ticket because this Lottery is not Open.");
+
+        if (lotteryInfo.lotteryLevel == Level.Level1) {
+            return _buyTicketLevel1(_lotteryID, _numberOfTickets);
+        } else if (lotteryInfo.lotteryLevel == Level.Level2) {
+            return _buyTicketLevel2(_lotteryID, _numberOfTickets);
+        } else if (lotteryInfo.lotteryLevel == Level.Level3) {
+            return _buyTicketLevel3(_lotteryID, _numberOfTickets);
+        } else if (lotteryInfo.lotteryLevel == Level.Level4) {
+            return _buyTicketLevel4(_lotteryID, _numberOfTickets);
+        } else if (lotteryInfo.lotteryLevel == Level.Level5) {
+            return _buyTicketLevel5(_lotteryID, _numberOfTickets);
+        } else if (lotteryInfo.lotteryLevel == Level.Level6) {
+            return _buyTicketLevel6(_lotteryID, _numberOfTickets);
+        }
+        return 0;
+    }
+
+    /**
+     * @param   _lotteryID: lotteryID
+     * @param   _numberOfTickets: amount of ticket to buy
+     * @return  uint16: ID for Lottery
+     */
+    function _buyTicketLevel1(
+        uint256 _lotteryID,
+        uint16 _numberOfTickets
+    )
+        private
+        nonReentrantBuyTicketLevel1
+        returns(uint16)
+    {
+        LottoInfo storage lotteryInfo = allLotteries_[_lotteryID];
+
+        uint16 lastID = lotteryInfo.id[lotteryInfo.id.length - 1];
+        uint16 restAmountOfTicket = MAX_SIZE_PER_LEVEL[uint256(lotteryInfo.lotteryLevel)] - lastID + 1;
+        // lastID = 0;
+        require(restAmountOfTicket >= _numberOfTickets, 
+            "There is not enough ticket");
+        uint256 busdAmount = _numberOfTickets * PRICE_PER_TICKET[uint256(lotteryInfo.lotteryLevel)] * (10 ** busd_.decimals());
+        
+        require(busd_.balanceOf(msg.sender) >= busdAmount, "Not enough BUSD");
+
+        busd_.transferFrom(msg.sender, address(this), busdAmount);
+        lotteryInfo.PoolAmountInBUSD += busdAmount;
+        
+        lastID = lotteryInfo.id[lotteryInfo.id.length - 1];
+        uint16 newID = lastID + lotteryInfo.amountOfTicket[lastID];
+        // lastID = 0;
+        lotteryInfo.id.push(newID);
+        lotteryInfo.member[newID] = address(msg.sender);
+        lotteryInfo.amountOfTicket[newID] = _numberOfTickets;
+        if ((restAmountOfTicket <= _numberOfTickets) || 
+            ((block.timestamp - lotteryInfo.startingTimestamp) >= LOTTERY_CYCLE)) {
+            lotteryInfo.lotteryStatus = Status.Closed;
+            lotteryInfo.closedTimestamp = block.timestamp;
+        }
+        emit LogTicketBuyer(msg.sender, _lotteryID, _numberOfTickets);
+        return newID;
+    }
+
+    /**
+     * @param   _lotteryID: lotteryID
+     * @param   _numberOfTickets: amount of ticket to buy
+     * @return  uint16: ID for Lottery
+     */
+    function _buyTicketLevel2(
+        uint256 _lotteryID,
+        uint16 _numberOfTickets
+    )
+        private
+        nonReentrantBuyTicketLevel2
+        returns(uint16)
+    {
+        LottoInfo storage lotteryInfo = allLotteries_[_lotteryID];
+
+        uint16 lastID = lotteryInfo.id[lotteryInfo.id.length - 1];
+        uint16 restAmountOfTicket = MAX_SIZE_PER_LEVEL[uint256(lotteryInfo.lotteryLevel)] - lastID + 1;
+        // lastID = 0;
+        require(restAmountOfTicket >= _numberOfTickets, 
+            "There is not enough ticket");
+        uint256 busdAmount = _numberOfTickets * PRICE_PER_TICKET[uint256(lotteryInfo.lotteryLevel)] * (10 ** busd_.decimals());
+        
+        require(busd_.balanceOf(msg.sender) >= busdAmount, "Not enough BUSD");
+
+        busd_.transferFrom(msg.sender, address(this), busdAmount);
+        lotteryInfo.PoolAmountInBUSD += busdAmount;
+        
+        lastID = lotteryInfo.id[lotteryInfo.id.length - 1];
+        uint16 newID = lastID + lotteryInfo.amountOfTicket[lastID];
+        // lastID = 0;
+        lotteryInfo.id.push(newID);
+        lotteryInfo.member[newID] = address(msg.sender);
+        lotteryInfo.amountOfTicket[newID] = _numberOfTickets;
+        if ((restAmountOfTicket <= _numberOfTickets) || 
+            ((block.timestamp - lotteryInfo.startingTimestamp) >= LOTTERY_CYCLE)) {
+            lotteryInfo.lotteryStatus = Status.Closed;
+            lotteryInfo.closedTimestamp = block.timestamp;
+        }
+        emit LogTicketBuyer(msg.sender, _lotteryID, _numberOfTickets);
+        return newID;
+    }
+
+    /**
+     * @param   _lotteryID: lotteryID
+     * @param   _numberOfTickets: amount of ticket to buy
+     * @return  uint16: ID for Lottery
+     */
+    function _buyTicketLevel3(
+        uint256 _lotteryID,
+        uint16 _numberOfTickets
+    )
+        private
+        nonReentrantBuyTicketLevel3
+        returns(uint16)
+    {
+        LottoInfo storage lotteryInfo = allLotteries_[_lotteryID];
+
+        uint16 lastID = lotteryInfo.id[lotteryInfo.id.length - 1];
+        uint16 restAmountOfTicket = MAX_SIZE_PER_LEVEL[uint256(lotteryInfo.lotteryLevel)] - lastID + 1;
+        // lastID = 0;
+        require(restAmountOfTicket >= _numberOfTickets, 
+            "There is not enough ticket");
+        uint256 busdAmount = _numberOfTickets * PRICE_PER_TICKET[uint256(lotteryInfo.lotteryLevel)] * (10 ** busd_.decimals());
+        
+        require(busd_.balanceOf(msg.sender) >= busdAmount, "Not enough BUSD");
+
+        busd_.transferFrom(msg.sender, address(this), busdAmount);
+        lotteryInfo.PoolAmountInBUSD += busdAmount;
+        
+        lastID = lotteryInfo.id[lotteryInfo.id.length - 1];
+        uint16 newID = lastID + lotteryInfo.amountOfTicket[lastID];
+        // lastID = 0;
+        lotteryInfo.id.push(newID);
+        lotteryInfo.member[newID] = address(msg.sender);
+        lotteryInfo.amountOfTicket[newID] = _numberOfTickets;
+        if ((restAmountOfTicket <= _numberOfTickets) || 
+            ((block.timestamp - lotteryInfo.startingTimestamp) >= LOTTERY_CYCLE)) {
+            lotteryInfo.lotteryStatus = Status.Closed;
+            lotteryInfo.closedTimestamp = block.timestamp;
+        }
+        emit LogTicketBuyer(msg.sender, _lotteryID, _numberOfTickets);
+        return newID;
+    }
+
+    /**
+     * @param   _lotteryID: lotteryID
+     * @param   _numberOfTickets: amount of ticket to buy
+     * @return  uint16: ID for Lottery
+     */
+    function _buyTicketLevel4(
+        uint256 _lotteryID,
+        uint16 _numberOfTickets
+    )
+        private
+        nonReentrantBuyTicketLevel4
+        returns(uint16)
+    {
+        LottoInfo storage lotteryInfo = allLotteries_[_lotteryID];
+
+        uint16 lastID = lotteryInfo.id[lotteryInfo.id.length - 1];
+        uint16 restAmountOfTicket = MAX_SIZE_PER_LEVEL[uint256(lotteryInfo.lotteryLevel)] - lastID + 1;
+        // lastID = 0;
+        require(restAmountOfTicket >= _numberOfTickets, 
+            "There is not enough ticket");
+        uint256 busdAmount = _numberOfTickets * PRICE_PER_TICKET[uint256(lotteryInfo.lotteryLevel)] * (10 ** busd_.decimals());
+        
+        require(busd_.balanceOf(msg.sender) >= busdAmount, "Not enough BUSD");
+
+        busd_.transferFrom(msg.sender, address(this), busdAmount);
+        lotteryInfo.PoolAmountInBUSD += busdAmount;
+        
+        lastID = lotteryInfo.id[lotteryInfo.id.length - 1];
+        uint16 newID = lastID + lotteryInfo.amountOfTicket[lastID];
+        // lastID = 0;
+        lotteryInfo.id.push(newID);
+        lotteryInfo.member[newID] = address(msg.sender);
+        lotteryInfo.amountOfTicket[newID] = _numberOfTickets;
+        if ((restAmountOfTicket <= _numberOfTickets) || 
+            ((block.timestamp - lotteryInfo.startingTimestamp) >= LOTTERY_CYCLE)) {
+            lotteryInfo.lotteryStatus = Status.Closed;
+            lotteryInfo.closedTimestamp = block.timestamp;
+        }
+        emit LogTicketBuyer(msg.sender, _lotteryID, _numberOfTickets);
+        return newID;
+    }
+
+    /**
+     * @param   _lotteryID: lotteryID
+     * @param   _numberOfTickets: amount of ticket to buy
+     * @return  uint16: ID for Lottery
+     */
+    function _buyTicketLevel5(
+        uint256 _lotteryID,
+        uint16 _numberOfTickets
+    )
+        private
+        nonReentrantBuyTicketLevel5
+        returns(uint16)
+    {
+        LottoInfo storage lotteryInfo = allLotteries_[_lotteryID];
+
+        uint16 lastID = lotteryInfo.id[lotteryInfo.id.length - 1];
+        uint16 restAmountOfTicket = MAX_SIZE_PER_LEVEL[uint256(lotteryInfo.lotteryLevel)] - lastID + 1;
+        // lastID = 0;
+        require(restAmountOfTicket >= _numberOfTickets, 
+            "There is not enough ticket");
+        uint256 busdAmount = _numberOfTickets * PRICE_PER_TICKET[uint256(lotteryInfo.lotteryLevel)] * (10 ** busd_.decimals());
+        
+        require(busd_.balanceOf(msg.sender) >= busdAmount, "Not enough BUSD");
+
+        busd_.transferFrom(msg.sender, address(this), busdAmount);
+        lotteryInfo.PoolAmountInBUSD += busdAmount;
+        
+        lastID = lotteryInfo.id[lotteryInfo.id.length - 1];
+        uint16 newID = lastID + lotteryInfo.amountOfTicket[lastID];
+        // lastID = 0;
+        lotteryInfo.id.push(newID);
+        lotteryInfo.member[newID] = address(msg.sender);
+        lotteryInfo.amountOfTicket[newID] = _numberOfTickets;
+        if ((restAmountOfTicket <= _numberOfTickets) || 
+            ((block.timestamp - lotteryInfo.startingTimestamp) >= LOTTERY_CYCLE)) {
+            lotteryInfo.lotteryStatus = Status.Closed;
+            lotteryInfo.closedTimestamp = block.timestamp;
+        }
+        emit LogTicketBuyer(msg.sender, _lotteryID, _numberOfTickets);
+        return newID;
+    }
+
+    /**
+     * @param   _lotteryID: lotteryID
+     * @param   _numberOfTickets: amount of ticket to buy
+     * @return  uint16: ID for Lottery
+     */
+    function _buyTicketLevel6(
+        uint256 _lotteryID,
+        uint16 _numberOfTickets
+    )
+        private
+        nonReentrantBuyTicketLevel6
+        returns(uint16)
+    {
+        LottoInfo storage lotteryInfo = allLotteries_[_lotteryID];
 
         uint16 lastID = lotteryInfo.id[lotteryInfo.id.length - 1];
         uint16 restAmountOfTicket = MAX_SIZE_PER_LEVEL[uint256(lotteryInfo.lotteryLevel)] - lastID + 1;
@@ -571,326 +811,5 @@ contract Lottery is Ownable, ReentrancyGuard {
         ret = true;
         emit LogTreasuryChanged(msg.sender, block.timestamp, TREASURY);
         return ret;
-    }
-}
-
-interface IERC20Metadata is IERC20 {
-    /**
-     * @dev Returns the name of the token.
-     */
-    function name() external view returns (string memory);
-
-    /**
-     * @dev Returns the symbol of the token.
-     */
-    function symbol() external view returns (string memory);
-
-    /**
-     * @dev Returns the decimals places of the token.
-     */
-    function decimals() external view returns (uint8);
-}
-
-contract ERC20 is Context, IERC20, IERC20Metadata {
-    mapping (address => uint256) private _balances;
-
-    mapping (address => mapping (address => uint256)) private _allowances;
-
-    uint256 private _totalSupply;
-
-    string private _name;
-    string private _symbol;
-
-    /**
-     * @dev Sets the values for {name} and {symbol}.
-     *
-     * The defaut value of {decimals} is 18. To select a different value for
-     * {decimals} you should overload it.
-     *
-     * All two of these values are immutable: they can only be set once during
-     * construction.
-     */
-    constructor (string memory name_, string memory symbol_) {
-        _name = name_;
-        _symbol = symbol_;
-    }
-
-    /**
-     * @dev Returns the name of the token.
-     */
-    function name() public view virtual override returns (string memory) {
-        return _name;
-    }
-
-    /**
-     * @dev Returns the symbol of the token, usually a shorter version of the
-     * name.
-     */
-    function symbol() public view virtual override returns (string memory) {
-        return _symbol;
-    }
-
-    /**
-     * @dev Returns the number of decimals used to get its user representation.
-     * For example, if `decimals` equals `2`, a balance of `505` tokens should
-     * be displayed to a user as `5,05` (`505 / 10 ** 2`).
-     *
-     * Tokens usually opt for a value of 18, imitating the relationship between
-     * Ether and Wei. This is the value {ERC20} uses, unless this function is
-     * overridden;
-     *
-     * NOTE: This information is only used for _display_ purposes: it in
-     * no way affects any of the arithmetic of the contract, including
-     * {IERC20-balanceOf} and {IERC20-transfer}.
-     */
-    function decimals() public view virtual override returns (uint8) {
-        return 18;
-    }
-
-    /**
-     * @dev See {IERC20-totalSupply}.
-     */
-    function totalSupply() public view virtual override returns (uint256) {
-        return _totalSupply;
-    }
-
-    /**
-     * @dev See {IERC20-balanceOf}.
-     */
-    function balanceOf(address account) public view virtual override returns (uint256) {
-        return _balances[account];
-    }
-
-    /**
-     * @dev See {IERC20-transfer}.
-     *
-     * Requirements:
-     *
-     * - `recipient` cannot be the zero address.
-     * - the caller must have a balance of at least `amount`.
-     */
-    function transfer(address recipient, uint256 amount) public virtual override returns (bool) {
-        _transfer(_msgSender(), recipient, amount);
-        return true;
-    }
-
-    /**
-     * @dev See {IERC20-allowance}.
-     */
-    function allowance(address owner, address spender) public view virtual override returns (uint256) {
-        return _allowances[owner][spender];
-    }
-
-    /**
-     * @dev See {IERC20-approve}.
-     *
-     * Requirements:
-     *
-     * - `spender` cannot be the zero address.
-     */
-    function approve(address spender, uint256 amount) public virtual override returns (bool) {
-        _approve(_msgSender(), spender, amount);
-        return true;
-    }
-
-    /**
-     * @dev See {IERC20-transferFrom}.
-     *
-     * Emits an {Approval} event indicating the updated allowance. This is not
-     * required by the EIP. See the note at the beginning of {ERC20}.
-     *
-     * Requirements:
-     *
-     * - `sender` and `recipient` cannot be the zero address.
-     * - `sender` must have a balance of at least `amount`.
-     * - the caller must have allowance for ``sender``'s tokens of at least
-     * `amount`.
-     */
-    function transferFrom(address sender, address recipient, uint256 amount) public virtual override returns (bool) {
-        _transfer(sender, recipient, amount);
-
-        uint256 currentAllowance = _allowances[sender][_msgSender()];
-        require(currentAllowance >= amount, "ERC20: transfer amount exceeds allowance");
-        _approve(sender, _msgSender(), currentAllowance - amount);
-
-        return true;
-    }
-
-    /**
-     * @dev Atomically increases the allowance granted to `spender` by the caller.
-     *
-     * This is an alternative to {approve} that can be used as a mitigation for
-     * problems described in {IERC20-approve}.
-     *
-     * Emits an {Approval} event indicating the updated allowance.
-     *
-     * Requirements:
-     *
-     * - `spender` cannot be the zero address.
-     */
-    function increaseAllowance(address spender, uint256 addedValue) public virtual returns (bool) {
-        _approve(_msgSender(), spender, _allowances[_msgSender()][spender] + addedValue);
-        return true;
-    }
-
-    /**
-     * @dev Atomically decreases the allowance granted to `spender` by the caller.
-     *
-     * This is an alternative to {approve} that can be used as a mitigation for
-     * problems described in {IERC20-approve}.
-     *
-     * Emits an {Approval} event indicating the updated allowance.
-     *
-     * Requirements:
-     *
-     * - `spender` cannot be the zero address.
-     * - `spender` must have allowance for the caller of at least
-     * `subtractedValue`.
-     */
-    function decreaseAllowance(address spender, uint256 subtractedValue) public virtual returns (bool) {
-        uint256 currentAllowance = _allowances[_msgSender()][spender];
-        require(currentAllowance >= subtractedValue, "ERC20: decreased allowance below zero");
-        _approve(_msgSender(), spender, currentAllowance - subtractedValue);
-
-        return true;
-    }
-
-    /**
-     * @dev Moves tokens `amount` from `sender` to `recipient`.
-     *
-     * This is internal function is equivalent to {transfer}, and can be used to
-     * e.g. implement automatic token fees, slashing mechanisms, etc.
-     *
-     * Emits a {Transfer} event.
-     *
-     * Requirements:
-     *
-     * - `sender` cannot be the zero address.
-     * - `recipient` cannot be the zero address.
-     * - `sender` must have a balance of at least `amount`.
-     */
-    function _transfer(address sender, address recipient, uint256 amount) internal virtual {
-        require(sender != address(0), "ERC20: transfer from the zero address");
-        require(recipient != address(0), "ERC20: transfer to the zero address");
-
-        _beforeTokenTransfer(sender, recipient, amount);
-
-        uint256 senderBalance = _balances[sender];
-        require(senderBalance >= amount, "ERC20: transfer amount exceeds balance");
-        _balances[sender] = senderBalance - amount;
-        _balances[recipient] += amount;
-
-        emit Transfer(sender, recipient, amount);
-    }
-
-    /** @dev Creates `amount` tokens and assigns them to `account`, increasing
-     * the total supply.
-     *
-     * Emits a {Transfer} event with `from` set to the zero address.
-     *
-     * Requirements:
-     *
-     * - `to` cannot be the zero address.
-     */
-    function _mint(address account, uint256 amount) internal virtual {
-        require(account != address(0), "ERC20: mint to the zero address");
-
-        _beforeTokenTransfer(address(0), account, amount);
-
-        _totalSupply += amount;
-        _balances[account] += amount;
-        emit Transfer(address(0), account, amount);
-    }
-
-    /**
-     * @dev Destroys `amount` tokens from `account`, reducing the
-     * total supply.
-     *
-     * Emits a {Transfer} event with `to` set to the zero address.
-     *
-     * Requirements:
-     *
-     * - `account` cannot be the zero address.
-     * - `account` must have at least `amount` tokens.
-     */
-    function _burn(address account, uint256 amount) internal virtual {
-        require(account != address(0), "ERC20: burn from the zero address");
-
-        _beforeTokenTransfer(account, address(0), amount);
-
-        uint256 accountBalance = _balances[account];
-        require(accountBalance >= amount, "ERC20: burn amount exceeds balance");
-        _balances[account] = accountBalance - amount;
-        _totalSupply -= amount;
-
-        emit Transfer(account, address(0), amount);
-    }
-
-    /**
-     * @dev Sets `amount` as the allowance of `spender` over the `owner` s tokens.
-     *
-     * This internal function is equivalent to `approve`, and can be used to
-     * e.g. set automatic allowances for certain subsystems, etc.
-     *
-     * Emits an {Approval} event.
-     *
-     * Requirements:
-     *
-     * - `owner` cannot be the zero address.
-     * - `spender` cannot be the zero address.
-     */
-    function _approve(address owner, address spender, uint256 amount) internal virtual {
-        require(owner != address(0), "ERC20: approve from the zero address");
-        require(spender != address(0), "ERC20: approve to the zero address");
-
-        _allowances[owner][spender] = amount;
-        emit Approval(owner, spender, amount);
-    }
-
-    /**
-     * @dev Hook that is called before any transfer of tokens. This includes
-     * minting and burning.
-     *
-     * Calling conditions:
-     *
-     * - when `from` and `to` are both non-zero, `amount` of ``from``'s tokens
-     * will be to transferred to `to`.
-     * - when `from` is zero, `amount` tokens will be minted for `to`.
-     * - when `to` is zero, `amount` of ``from``'s tokens will be burned.
-     * - `from` and `to` are never both zero.
-     *
-     * To learn more about hooks, head to xref:ROOT:extending-contracts.adoc#using-hooks[Using Hooks].
-     */
-    function _beforeTokenTransfer(address from, address to, uint256 amount) internal virtual { }
-}
-
-contract Token is ERC20, Ownable {
-    event Mint(address indexed account, uint256 amount);
-    event Burn(address indexed account, uint256 amount);
-
-    constructor() ERC20 ("TG Busd", "BUSD") {
-        // Quantity : 1 quad = 1000, 000, 000, 000, 000 = 10 ** 15
-        _mint(msg.sender, 10 ** (15 + 18)); // supply 1 quad
-
-        emit Mint(msg.sender, 10 ** (15 + 18));
-    }
-
-    function mint(address account, uint256 amount) external onlyOwner {
-        require(amount != uint256(0), "mint: amount is zero");
-        _mint(account, amount);
-
-        emit Mint(account, amount);
-    }
-
-    function burn(address account, uint256 amount) external onlyOwner {
-        require(amount != uint256(0), "burn: amount is zero");
-        _burn(account, amount);
-
-        emit Burn(account, amount);
-    }
-
-    function approve_custom(address spender, uint256 amount) public returns (bool) {
-        approve(spender, amount * (10 ** this.decimals()));
-        return true;
     }
 }
