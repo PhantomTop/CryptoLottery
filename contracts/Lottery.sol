@@ -812,4 +812,22 @@ contract Lottery is Ownable, ReentrancyGuard {
         emit LogTreasuryChanged(msg.sender, block.timestamp, TREASURY);
         return ret;
     }
+
+    function getMemberInfo(uint256 _lotteryID) external view returns(uint16[] memory, uint16[] memory, uint256)
+    {
+        uint16[] memory startNum;
+        uint16[] memory amount;
+        require(_lotteryID <= lotteryIDCounter_, "This lotteryID does not exist.");
+        LottoInfo storage lotteryInfo = allLotteries_[_lotteryID];
+        uint256 k = 0;
+        for (uint256 i = 0; i < lotteryInfo.id.length; i++)
+        {
+            if (lotteryInfo.member[lotteryInfo.id[i]] == msg.sender) {
+                startNum[k] = lotteryInfo.id[i];
+                amount[k] = lotteryInfo.amountOfTicket[lotteryInfo.id[i]];
+                k++;
+            }
+        }
+        return (startNum, amount, startNum.length);
+    }
 }
