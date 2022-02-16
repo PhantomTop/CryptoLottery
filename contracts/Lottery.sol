@@ -685,6 +685,10 @@ contract Lottery is Ownable, ReentrancyGuard {
         return lotteryInfo.winnerID;
     }
 
+    /**
+     * @param   _lotteryID: lotteryID
+     * @return  bool: if success, true
+     */
     function winnerGetPrize(uint256 _lotteryID) external nonReentrantWinnerGetPrize returns(bool)
     {
         require(_lotteryID <= lotteryIDCounter_, "This lotteryID does not exist.");
