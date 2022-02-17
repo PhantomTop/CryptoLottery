@@ -241,9 +241,9 @@ contract Lottery is Ownable, ReentrancyGuard {
     function getRestAmountOfTicket(uint256 _lotteryID) public view returns(uint16)
     {
         require(_lotteryID <= lotteryIDCounter_, "This lotteryID does not exist.");
-        uint16 lastID = uint16(allLotteries_[_lotteryID].id.length) - 1;
+        uint16 lastID = allLotteries_[_lotteryID].id[allLotteries_[_lotteryID].id.length - 1];
         uint16 restAmountOfTicket = MAX_SIZE_PER_LEVEL[uint256(allLotteries_[_lotteryID].lotteryLevel)] + 1 
-            - allLotteries_[_lotteryID].amountOfTicket[lastID] - allLotteries_[_lotteryID].id[lastID];
+            - allLotteries_[_lotteryID].amountOfTicket[lastID] - lastID;
         return restAmountOfTicket;
     }
 
