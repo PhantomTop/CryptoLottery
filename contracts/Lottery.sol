@@ -20,7 +20,7 @@ contract Lottery is Ownable, ReentrancyGuard {
     uint16[6] public PRICE_PER_TICKET = [10, 100, 500, 1000, 5000, 10000]; // price per ticket in busd
     uint16[6] public MAX_SIZE_PER_LEVEL = [1000, 500, 100, 50, 50, 35]; // pool size per lotto
     // Treasury wallet must be multi-sig wallet
-    address public TREASURY = 0xd51aF39B679EA8C4B5720E681D2b89cDAb01eABd; // Treasury wallet address, LotteryOwner for ganache
+    address public TREASURY = 0x821965C1fD8B60D4B33E23C5832E2A7662faAADC; // Treasury wallet address
 
     // for random number
     uint256 private constant MAX_UINT_VALUE = (2**256 - 1);
@@ -235,6 +235,9 @@ contract Lottery is Ownable, ReentrancyGuard {
     function getLotteryRemainTime(uint256 _lotteryID) external view returns(uint256)
     {
         require(_lotteryID <= lotteryIDCounter_, "This lotteryID does not exist.");
+        if(LOTTERY_CYCLE <= (block.timestamp - allLotteries_[_lotteryID].startingTimestamp)) {
+            return 0;
+        }
         return LOTTERY_CYCLE - (block.timestamp - allLotteries_[_lotteryID].startingTimestamp);
     }
     
