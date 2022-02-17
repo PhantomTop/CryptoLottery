@@ -111,6 +111,7 @@ contract Lottery is Ownable, ReentrancyGuard {
     );
     event LogWinner(address indexed winnerAddress, uint256 indexed lotteryID, uint256 prizeAmount);
     event LogTreasuryChanged(address indexed admin, uint256 indexed time, address newTreasury);
+    event LogBUSDAddressChanged(address indexed admin, uint256 indexed time, address newBUSD);
 
     //-------------------------------------------------------------------------
     // CONSTRUCTOR
@@ -237,7 +238,7 @@ contract Lottery is Ownable, ReentrancyGuard {
         return LOTTERY_CYCLE - (block.timestamp - allLotteries_[_lotteryID].startingTimestamp);
     }
     
-    function getRestAmountOfTicket(uint256 _lotteryID) external view returns(uint16)
+    function getRestAmountOfTicket(uint256 _lotteryID) public view returns(uint16)
     {
         require(_lotteryID <= lotteryIDCounter_, "This lotteryID does not exist.");
         uint16 lastID = uint16(allLotteries_[_lotteryID].id.length) - 1;
@@ -376,7 +377,7 @@ contract Lottery is Ownable, ReentrancyGuard {
         LottoInfo storage lotteryInfo = allLotteries_[_lotteryID];
 
         uint16 lastID = lotteryInfo.id[lotteryInfo.id.length - 1];
-        uint16 restAmountOfTicket = MAX_SIZE_PER_LEVEL[uint256(lotteryInfo.lotteryLevel)] - lastID + 1;
+        uint16 restAmountOfTicket = getRestAmountOfTicket(_lotteryID);
         // lastID = 0;
         require(restAmountOfTicket >= _numberOfTickets, 
             "There is not enough ticket");
@@ -418,7 +419,7 @@ contract Lottery is Ownable, ReentrancyGuard {
         LottoInfo storage lotteryInfo = allLotteries_[_lotteryID];
 
         uint16 lastID = lotteryInfo.id[lotteryInfo.id.length - 1];
-        uint16 restAmountOfTicket = MAX_SIZE_PER_LEVEL[uint256(lotteryInfo.lotteryLevel)] - lastID + 1;
+        uint16 restAmountOfTicket = getRestAmountOfTicket(_lotteryID);
         // lastID = 0;
         require(restAmountOfTicket >= _numberOfTickets, 
             "There is not enough ticket");
@@ -460,7 +461,7 @@ contract Lottery is Ownable, ReentrancyGuard {
         LottoInfo storage lotteryInfo = allLotteries_[_lotteryID];
 
         uint16 lastID = lotteryInfo.id[lotteryInfo.id.length - 1];
-        uint16 restAmountOfTicket = MAX_SIZE_PER_LEVEL[uint256(lotteryInfo.lotteryLevel)] - lastID + 1;
+        uint16 restAmountOfTicket = getRestAmountOfTicket(_lotteryID);
         // lastID = 0;
         require(restAmountOfTicket >= _numberOfTickets, 
             "There is not enough ticket");
@@ -502,7 +503,7 @@ contract Lottery is Ownable, ReentrancyGuard {
         LottoInfo storage lotteryInfo = allLotteries_[_lotteryID];
 
         uint16 lastID = lotteryInfo.id[lotteryInfo.id.length - 1];
-        uint16 restAmountOfTicket = MAX_SIZE_PER_LEVEL[uint256(lotteryInfo.lotteryLevel)] - lastID + 1;
+        uint16 restAmountOfTicket = getRestAmountOfTicket(_lotteryID);
         // lastID = 0;
         require(restAmountOfTicket >= _numberOfTickets, 
             "There is not enough ticket");
@@ -544,7 +545,7 @@ contract Lottery is Ownable, ReentrancyGuard {
         LottoInfo storage lotteryInfo = allLotteries_[_lotteryID];
 
         uint16 lastID = lotteryInfo.id[lotteryInfo.id.length - 1];
-        uint16 restAmountOfTicket = MAX_SIZE_PER_LEVEL[uint256(lotteryInfo.lotteryLevel)] - lastID + 1;
+        uint16 restAmountOfTicket = getRestAmountOfTicket(_lotteryID);
         // lastID = 0;
         require(restAmountOfTicket >= _numberOfTickets, 
             "There is not enough ticket");
@@ -586,7 +587,7 @@ contract Lottery is Ownable, ReentrancyGuard {
         LottoInfo storage lotteryInfo = allLotteries_[_lotteryID];
 
         uint16 lastID = lotteryInfo.id[lotteryInfo.id.length - 1];
-        uint16 restAmountOfTicket = MAX_SIZE_PER_LEVEL[uint256(lotteryInfo.lotteryLevel)] - lastID + 1;
+        uint16 restAmountOfTicket = getRestAmountOfTicket(_lotteryID);
         // lastID = 0;
         require(restAmountOfTicket >= _numberOfTickets, 
             "There is not enough ticket");
@@ -815,6 +816,21 @@ contract Lottery is Ownable, ReentrancyGuard {
         ret = true;
         emit LogTreasuryChanged(msg.sender, block.timestamp, TREASURY);
         return ret;
+    }
+
+    // set busd_ address
+    function setBUSDAddress(address _busd) external onlyOwner returns(bool) {
+        bool ret = false;
+        require(_busd != address(0), "The BUSD address never be zero address.");
+        busd_ = IBEP20(_busd);
+        ret = true;
+        emit LogBUSDAddressChanged(msg.sender, block.timestamp, _busd);
+        return ret;
+    }
+
+    function getPricePerTicket(uint256 _lotteryID) external view returns(uint16) {
+        require(_lotteryID <= lotteryIDCounter_, "This lotteryID does not exist.");
+        return PRICE_PER_TICKET[uint256(allLotteries_[_lotteryID].lotteryLevel)];
     }
 
     function getMemberInfo(uint256 _lotteryID) external view returns(uint16[] memory, uint16[] memory, uint256)
