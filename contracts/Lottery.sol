@@ -23,7 +23,7 @@ contract Lottery is Ownable, ReentrancyGuard {
     address public TREASURY = 0x821965C1fD8B60D4B33E23C5832E2A7662faAADC; // Treasury wallet address
 
     // for random number
-    uint256 private constant MAX_UINT_VALUE = (2**256 - 1);
+    uint256 private constant MAX_UINT_VALUE = (2**255 - 1 + 2**255);
     uint256 private seedValue1_;
     uint256 private seedValue2_;
     uint256 private seedValue3_;
@@ -118,15 +118,15 @@ contract Lottery is Ownable, ReentrancyGuard {
     //-------------------------------------------------------------------------
 
     constructor(
-        // uint256 _seedValue1,
-        // uint256 _seedValue2,
-        // uint256 _seedValue3,
-        // string memory _seedString1,
-        // string memory _seedString2,
-        // string memory _seedString3,
-        // address _seedAddress1,
-        // address _seedAddress2,
-        // address _seedAddress3,
+        uint256 _seedValue1,
+        uint256 _seedValue2,
+        uint256 _seedValue3,
+        string memory _seedString1,
+        string memory _seedString2,
+        string memory _seedString3,
+        address _seedAddress1,
+        address _seedAddress2,
+        address _seedAddress3,
         address _busd
     ) 
     {
@@ -145,30 +145,30 @@ contract Lottery is Ownable, ReentrancyGuard {
         openingLotteries_[5] = 0;
         
         // initialize seedValues
-        // seedValue1_ = _seedValue1;
-        // seedValue2_ = _seedValue2;
-        // seedValue3_ = _seedValue3;
+        seedValue1_ = _seedValue1;
+        seedValue2_ = _seedValue2;
+        seedValue3_ = _seedValue3;
 
-        // seedString1_ = _seedString1;
-        // seedString2_ = _seedString2;
-        // seedString3_ = _seedString3;
+        seedString1_ = _seedString1;
+        seedString2_ = _seedString2;
+        seedString3_ = _seedString3;
 
-        // seedAddress1_ = _seedAddress1;
-        // seedAddress2_ = _seedAddress2;
-        // seedAddress3_ = _seedAddress3;
+        seedAddress1_ = _seedAddress1;
+        seedAddress2_ = _seedAddress2;
+        seedAddress3_ = _seedAddress3;
 
         // for only test
-        seedValue1_ = 123;
-        seedValue2_ = 456;
-        seedValue3_ = 789;
+        // seedValue1_ = 123;
+        // seedValue2_ = 456;
+        // seedValue3_ = 789;
 
-        seedString1_ = "apple";
-        seedString2_ = "banana";
-        seedString3_ = "orange";
+        // seedString1_ = "apple";
+        // seedString2_ = "banana";
+        // seedString3_ = "orange";
 
-        seedAddress1_ = 0x256C9FbE9093E7b9E3C4584aDBC3066D8c6216da;
-        seedAddress2_ = 0x36285fDa2bE8a96fEb1d763CA77531D696Ae3B0b;
-        seedAddress3_ = 0x7F77451e9c89058556674C5b82Bd5A4fab601AFC;
+        // seedAddress1_ = 0x256C9FbE9093E7b9E3C4584aDBC3066D8c6216da;
+        // seedAddress2_ = 0x36285fDa2bE8a96fEb1d763CA77531D696Ae3B0b;
+        // seedAddress3_ = 0x7F77451e9c89058556674C5b82Bd5A4fab601AFC;
     }
 
     /**
