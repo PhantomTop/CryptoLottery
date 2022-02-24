@@ -23,7 +23,7 @@ contract Lottery is Ownable, ReentrancyGuard {
     address public TREASURY = 0x821965C1fD8B60D4B33E23C5832E2A7662faAADC; // Treasury wallet address
 
     // for random number
-    uint256 private constant MAX_UINT_VALUE = (2**255 - 1 + 2**255);
+    uint256 private constant MAX_UINT_VALUE = 2**256 - 1;
     uint256 private seedValue1_;
     uint256 private seedValue2_;
     uint256 private seedValue3_;
