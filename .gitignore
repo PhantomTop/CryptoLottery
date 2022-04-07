@@ -9,3 +9,6 @@ cache
 artifacts
 .vscode/
 package-lock.json
+address.txt
+func-list
+Lottery.json

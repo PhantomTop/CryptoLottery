@@ -35,13 +35,23 @@ abstract contract ReentrancyGuard {
     uint256 private constant _ENTERED = 2;
 
     uint256 private _status;
-    uint256 private _statusBuyTicket;
+    uint256 private _statusBuyTicketLevel1;
+    uint256 private _statusBuyTicketLevel2;
+    uint256 private _statusBuyTicketLevel3;
+    uint256 private _statusBuyTicketLevel4;
+    uint256 private _statusBuyTicketLevel5;
+    uint256 private _statusBuyTicketLevel6;
     uint256 private _statusWhoIsWinner;
     uint256 private _statusWinnerGetPrize;
 
     constructor() {
         _status = _NOT_ENTERED;
-        _statusBuyTicket = _NOT_ENTERED;
+        _statusBuyTicketLevel1 = _NOT_ENTERED;
+        _statusBuyTicketLevel2 = _NOT_ENTERED;
+        _statusBuyTicketLevel3 = _NOT_ENTERED;
+        _statusBuyTicketLevel4 = _NOT_ENTERED;
+        _statusBuyTicketLevel5 = _NOT_ENTERED;
+        _statusBuyTicketLevel6 = _NOT_ENTERED;
         _statusWhoIsWinner = _NOT_ENTERED;
         _statusWinnerGetPrize = _NOT_ENTERED;
     }
@@ -67,18 +77,88 @@ abstract contract ReentrancyGuard {
         _status = _NOT_ENTERED;
     }
 
-    modifier nonReentrantBuyTicket() {
+    modifier nonReentrantBuyTicketLevel1() {
         // On the first call to nonReentrant, _notEntered will be true
-        require(_statusBuyTicket != _ENTERED, "ReentrancyGuard: reentrant call");
+        require(_statusBuyTicketLevel1 != _ENTERED, "ReentrancyGuard: reentrant call");
 
         // Any calls to nonReentrant after this point will fail
-        _statusBuyTicket = _ENTERED;
+        _statusBuyTicketLevel1 = _ENTERED;
 
         _;
 
         // By storing the original value once again, a refund is triggered (see
         // https://eips.ethereum.org/EIPS/eip-2200)
-        _statusBuyTicket = _NOT_ENTERED;
+        _statusBuyTicketLevel1 = _NOT_ENTERED;
+    }
+
+    modifier nonReentrantBuyTicketLevel2() {
+        // On the first call to nonReentrant, _notEntered will be true
+        require(_statusBuyTicketLevel2 != _ENTERED, "ReentrancyGuard: reentrant call");
+
+        // Any calls to nonReentrant after this point will fail
+        _statusBuyTicketLevel2 = _ENTERED;
+
+        _;
+
+        // By storing the original value once again, a refund is triggered (see
+        // https://eips.ethereum.org/EIPS/eip-2200)
+        _statusBuyTicketLevel2 = _NOT_ENTERED;
+    }
+
+    modifier nonReentrantBuyTicketLevel3() {
+        // On the first call to nonReentrant, _notEntered will be true
+        require(_statusBuyTicketLevel3 != _ENTERED, "ReentrancyGuard: reentrant call");
+
+        // Any calls to nonReentrant after this point will fail
+        _statusBuyTicketLevel3 = _ENTERED;
+
+        _;
+
+        // By storing the original value once again, a refund is triggered (see
+        // https://eips.ethereum.org/EIPS/eip-2200)
+        _statusBuyTicketLevel3 = _NOT_ENTERED;
+    }
+
+    modifier nonReentrantBuyTicketLevel4() {
+        // On the first call to nonReentrant, _notEntered will be true
+        require(_statusBuyTicketLevel4 != _ENTERED, "ReentrancyGuard: reentrant call");
+
+        // Any calls to nonReentrant after this point will fail
+        _statusBuyTicketLevel4 = _ENTERED;
+
+        _;
+
+        // By storing the original value once again, a refund is triggered (see
+        // https://eips.ethereum.org/EIPS/eip-2200)
+        _statusBuyTicketLevel4 = _NOT_ENTERED;
+    }
+
+    modifier nonReentrantBuyTicketLevel5() {
+        // On the first call to nonReentrant, _notEntered will be true
+        require(_statusBuyTicketLevel5 != _ENTERED, "ReentrancyGuard: reentrant call");
+
+        // Any calls to nonReentrant after this point will fail
+        _statusBuyTicketLevel5 = _ENTERED;
+
+        _;
+
+        // By storing the original value once again, a refund is triggered (see
+        // https://eips.ethereum.org/EIPS/eip-2200)
+        _statusBuyTicketLevel5 = _NOT_ENTERED;
+    }
+
+    modifier nonReentrantBuyTicketLevel6() {
+        // On the first call to nonReentrant, _notEntered will be true
+        require(_statusBuyTicketLevel6 != _ENTERED, "ReentrancyGuard: reentrant call");
+
+        // Any calls to nonReentrant after this point will fail
+        _statusBuyTicketLevel6 = _ENTERED;
+
+        _;
+
+        // By storing the original value once again, a refund is triggered (see
+        // https://eips.ethereum.org/EIPS/eip-2200)
+        _statusBuyTicketLevel6 = _NOT_ENTERED;
     }
 
     modifier nonReentrantWhoIsWinner() {
